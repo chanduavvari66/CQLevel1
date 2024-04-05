@@ -1,21 +1,18 @@
-public class SyncPartObject {
-
-    // Method to initiate the synchronization process
-    @InvocableMethod(label='Sync Part Records')
-    public static void syncPartMethod() {
+public class syncPartObject {
+    
+        @InvocableMethod(label='Sync Part Records') 
+        public static void syncPart_Api() {
         String profileID = UserInfo.getProfileId();
         List<Profile> profileName = [SELECT Name FROM Profile WHERE Id = :profileID];
-        
         if (profileName.isEmpty() || !profileName[0].Name.equals('System Administrator')) {
             throw new AuraHandledException('You do not have access.');
         }
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(system.label.CQ_End_Point);
+        request.setMethod('GET');
+        request.setHeader('Content-Type', 'application/json');
+        request.setHeader('x-api-key',system.label.CQ_Consumer_Key );
         
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint('https://cqparts-3d06.restdb.io/rest/cqpart');
-        req.setMethod('GET');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('x-api-key', 'b96d75ce0f9f342d10af6710ef8ea7ed0ad06');
- 
         Http http = new Http();
         HttpResponse res = http.send(req);
  
@@ -79,38 +76,5 @@ public class SyncPartObject {
         }
     }
     }
-    // Method to determine the Related Account based on logic provided
-  /* private static Id getRelatedAccount(Map<String, Object> partMap) {
-    Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total_Quantity_Shipped')));
-    System.debug('Total Quantity Shipped: ' + totalQuantityShipped);
-   
-    // Logic to determine Related Account based on Total Quantity Shipped
-    if (totalQuantityShipped != null) {
-        // Query and return Account Id based on Total Quantity Shipped
-        if (totalQuantityShipped < 99) {
-            Account highVolumeAccount = [SELECT Id FROM Account WHERE Name = 'High Volume' LIMIT 1];
-            if (highVolumeAccount != null) {
-                System.debug('High Volume Account Id: ' + highVolumeAccount.Id);
-                return highVolumeAccount.Id;
-            } else {
-                System.debug('High Volume Account not found');
-                return null;
-            }
-        } else {
-            Account lowVolumeAccount = [SELECT Id FROM Account WHERE Name = 'Low Volume' LIMIT 1];
-            if (lowVolumeAccount != null) {
-                System.debug('Low Volume Account Id: ' + lowVolumeAccount.Id);
-                return lowVolumeAccount.Id;
-            } else {
-                System.debug('Low Volume Account not found');
-                return null;
-            }
-        }
-    } else {
-        System.debug('Total Quantity Shipped is null');
-        return null;
-    }
-}*/
-
 
 }
