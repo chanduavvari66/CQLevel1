@@ -1,8 +1,8 @@
-public class PartApexController {
+public class PartController {
     @AuraEnabled
-    public static String syncPartsMethod() {
+    public static String partsSyncMethod() {
         try {
-            syncPartObject.syncPart_Api();
+            PartSyncObject.syncPart_Api();
             return 'Success';
         } catch (Exception e) {
             return 'Error: ' + e.getMessage();

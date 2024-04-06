@@ -1,8 +1,8 @@
 @isTest
-private class SyncPartObjectTest {
+private class PartSyncObjectTest {
 
     @isTest
-    static void testSyncParts() {
+    static void testParts() {
         // Create test data for mock HTTP response
         String mockResponse = '[{"PartName": "Test Part 1", "x_id": "12345", "TotalQuantityShipped": "50"}, ' +
                               '{"PartName": "Test Part 2", "x_id": "67890", "TotalQuantityShipped": "100"}]';
@@ -11,7 +11,7 @@ private class SyncPartObjectTest {
 
         // Test syncParts method
         Test.startTest();
-        SyncPartObject.syncPartRecords();
+        PartSyncObject.syncPart_Api();
         Test.stopTest();
 
         // Verify the insertion of SQX_Part__c records

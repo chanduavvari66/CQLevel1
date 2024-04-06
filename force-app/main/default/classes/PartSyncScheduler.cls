@@ -1,6 +1,6 @@
-global class PartSynchronizationScheduler implements Schedulable {
+global class PartSyncScheduler implements Schedulable {
     global void execute(SchedulableContext sc) {
         // Call the method to synchronize Part records
-        syncPartObject.syncPart_Api();
+            PartSyncObject.syncPart_Api();
     }
 }

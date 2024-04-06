@@ -1,4 +1,4 @@
-<aura:component controller="PartApexController">
+<aura:component  implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="PartController" access="global" >
     <aura:attribute name="status" type="String" default=""/>
 
     <lightning:button label="Sync Parts" onclick="{!c.syncParts}"/>
