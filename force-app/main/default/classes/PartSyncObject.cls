@@ -23,8 +23,8 @@ public class PartSyncObject {
                 try {
                     List<Object> parts = (List<Object>) JSON.deserializeUntyped(responseBody);                    
                     List<SQX_Part__c> partRecords = new List<SQX_Part__c>();
-                    List<Account> highVolumeAccounts = [SELECT Id FROM Account WHERE Name = 'High Volume' LIMIT 1];
-                    List<Account> lowVolumeAccounts = [SELECT Id FROM Account WHERE Name = 'Low Volume' LIMIT 1];
+                    List<Account> highVolume = [SELECT Id FROM Account WHERE Name = 'High Volume' LIMIT 1];
+                    List<Account> lowVolume = [SELECT Id FROM Account WHERE Name = 'Low Volume' LIMIT 1];
 
                     for (Object part : parts) {
                         try {
@@ -37,8 +37,7 @@ public class PartSyncObject {
                                     newPart.Active__c = true; // Hardcoded as 'true' as per the requirement
                                         if (partMap.get('Total_Quantity_Shipped') != null) {
                                             Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total_Quantity_Shipped')));
-                                            system.debug('totalQuantityShipped' + totalQuantityShipped);
-                                            newPart.Related_Account__c = highVolumeAccounts[0].id;
+                                            newPart.Related_Account__c = totalQuantityShipped > 99 ? highVolume[0].Id : lowVolume[0].Id;
                                         }
                                     partRecords.add(newPart);
                                 } else {
