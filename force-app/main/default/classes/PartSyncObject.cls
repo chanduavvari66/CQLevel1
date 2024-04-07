@@ -1,7 +1,4 @@
 public class PartSyncObject {
-
-    // Method to initiate the synchronization process
-    @InvocableMethod(label='Sync Part Records')
     public static void syncPart_Api() {
         String profileID = UserInfo.getProfileId();
         List<Profile> profileName = [SELECT Name FROM Profile WHERE Id = :profileID];
