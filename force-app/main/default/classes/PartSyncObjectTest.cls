@@ -8,8 +8,14 @@ private class PartSyncObjectTest {
                               '{"PartName": "Part 2", "x_id": "22222", "TotalQuantityShipped": "101"}]';
 
         Test.setMock(HttpCalloutMock.class, new MockHttp(testResponse, 200));
-
-        // Running Test
+        
+        // Insert Account High and Low Volume
+        Account highVolume = new Account(Name='High Volume');
+        insert highVolume;
+        Account lowVolume = new Account(Name='Low Volume');
+		insert lowVolume;
+        
+        // Starting Test
         Test.startTest();
         PartSyncObject.syncPart_Api();
         Test.stopTest();
@@ -23,9 +29,11 @@ private class PartSyncObjectTest {
             if (part.Part_Number__c == '11111') {
                 System.assertEquals('Part 1', part.Name, 'Part 1 not inserted');
                 System.assertEquals(true, part.Active__c, 'Active is false for part 1');
+                System.assertEquals(highVolume.Id, part.Related_Account__c, 'Incorrect Related Account Part 1');
             } else if (part.Part_Number__c == '22222') {
                 System.assertEquals('Part 2', part.Name, 'part 2 not inserted');
                 System.assertEquals(true, part.Active__c, 'Active is false for part 2');
+                System.assertEquals(lowVolume.Id, part.Related_Account__c, 'Incorrect Related Account Part 2');
             }
         }
     }
