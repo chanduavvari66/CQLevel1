@@ -32,11 +32,11 @@ public class PartSyncObject {
                             // Check for null values before accessing map keys
                                 if (partMap != null) {
                                     SQX_Part__c newPart = new SQX_Part__c();
-                                    newPart.Part_Number__c = String.valueOf(partMap.get('_Id'));
+                                    newPart.Part_Number__c = String.valueOf(partMap.get('_id'));
                                     newPart.Name = String.valueOf(partMap.get('Part Name'));
                                     newPart.Active__c = true; // Hardcoded as 'true' as per the requirement
                                         if (partMap.get('Total_Quantity_Shipped') != null) {
-                                            Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total_Quantity_Shipped')));
+                                            Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total Quantity Shipped')));
                                             newPart.Related_Account__c = totalQuantityShipped > 99 ? highVolume[0].Id : lowVolume[0].Id;
                                         }
                                     partRecords.add(newPart);
