@@ -35,7 +35,7 @@ public class PartSyncObject {
                                     newPart.Part_Number__c = String.valueOf(partMap.get('_id'));
                                     newPart.Name = String.valueOf(partMap.get('Part Name'));
                                     newPart.Active__c = true; // Hardcoded as 'true' as per the requirement
-                                        if (partMap.get('Total_Quantity_Shipped') != null) {
+                                        if (partMap.get('Total Quantity Shipped') != null) {
                                             Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total Quantity Shipped')));
                                             newPart.Related_Account__c = totalQuantityShipped > 99 ? highVolume[0].Id : lowVolume[0].Id;
                                         }
