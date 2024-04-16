@@ -3,7 +3,7 @@ public class PartSyncObject {
         String profileID = UserInfo.getProfileId();
         List<Profile> profileName = [SELECT Name FROM Profile WHERE Id = :profileID];
         
-        if (profileName.isEmpty() || !profileName[0].Name.equals('System Administrator')) {
+        if (!profileName[0].Name.equals('System Administrator')) {
             throw new AuraHandledException('You do not have access.');
         }
         
@@ -21,6 +21,7 @@ public class PartSyncObject {
             System.debug('Response Body: ' + responseBody);
             if (String.isNotBlank(responseBody)) {
                 try {
+                    // Deserialize the JSON response into a list of objects
                     List<Object> parts = (List<Object>) JSON.deserializeUntyped(responseBody);                    
                     List<SQX_Part__c> partRecords = new List<SQX_Part__c>();
                     List<Account> highVolume = [SELECT Id FROM Account WHERE Name = 'High Volume' LIMIT 1];
@@ -28,18 +29,21 @@ public class PartSyncObject {
 
                     for (Object part : parts) {
                         try {
+                            // Convert the part object to a map
                             Map<String, Object> partMap = (Map<String, Object>) part;
                             // Check for null values before accessing map keys
                                 if (partMap != null) {
-                                    SQX_Part__c newPart = new SQX_Part__c();
-                                    newPart.Part_Number__c = String.valueOf(partMap.get('_id'));
-                                    newPart.Name = String.valueOf(partMap.get('Part Name'));
-                                    newPart.Active__c = true; // Hardcoded as 'true' as per the requirement
+                                    SQX_Part__c insertPart = new SQX_Part__c();
+                                    insertPart.Part_Number__c = String.valueOf(partMap.get('_id'));
+                                    insertPart.Name = String.valueOf(partMap.get('Part Name'));
+                                    // Hardcoded as 'true' as per the requirement
+                                    insertPart.Active__c = true; 
                                         if (partMap.get('Total Quantity Shipped') != null) {
                                             Integer totalQuantityShipped = Integer.valueOf(String.valueOf(partMap.get('Total Quantity Shipped')));
-                                            newPart.Related_Account__c = totalQuantityShipped > 99 ? highVolume[0].Id : lowVolume[0].Id;
+                                            insertPart.Related_Account__c = totalQuantityShipped >= 99 ? lowVolume[0].Id : highVolume[0].Id;
                                         }
-                                    partRecords.add(newPart);
+                                    // Add the new Part record to the list
+                                    partRecords.add(insertPart);
                                 } else {
                                 }
                             } catch (Exception e) {
