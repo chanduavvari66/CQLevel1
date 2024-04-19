@@ -3,10 +3,8 @@ public class PartSyncObject {
         String profileID = UserInfo.getProfileId();
         List<Profile> profileName = [SELECT Name FROM Profile WHERE Id = :profileID];
         
-        if (!profileName[0].Name.equals('System Administrator')) {
-            throw new AuraHandledException('You do not have access.');
-        }
-        
+        if (profileName[0].Name.equals('System Administrator')) {
+                  
         HttpRequest req = new HttpRequest();
         req.setEndpoint(system.label.End_Point);
         req.setMethod('GET');
@@ -20,7 +18,7 @@ public class PartSyncObject {
             String responseBody = res.getBody();
             System.debug('Response Body: ' + responseBody);
             if (String.isNotBlank(responseBody)) {
-                try {
+                
                     // Deserialize the JSON response into a list of objects
                     List<Object> parts = (List<Object>) JSON.deserializeUntyped(responseBody);                    
                     List<SQX_Part__c> partRecords = new List<SQX_Part__c>();
@@ -28,7 +26,6 @@ public class PartSyncObject {
                     List<Account> lowVolume = [SELECT Id FROM Account WHERE Name = 'Low Volume' LIMIT 1];
 
                     for (Object part : parts) {
-                        try {
                             // Convert the part object to a map
                             Map<String, Object> partMap = (Map<String, Object>) part;
                             // Check for null values before accessing map keys
@@ -44,20 +41,15 @@ public class PartSyncObject {
                                         }
                                     // Add the new Part record to the list
                                     partRecords.add(insertPart);
-                                } else {
                                 }
-                            } catch (Exception e) {
-                            }
+                             
                     } 
                         // Insert the new Part records
                         if (!partRecords.isEmpty()) {
                             insert partRecords;
                         }
-                } catch (Exception e) {
-                    throw new AuraHandledException('Error deserializing JSON: ' + e.getMessage());
-                }
-            } else {
-            }
+            	}
+            } 
         }
     }
 }
